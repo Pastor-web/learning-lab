@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FDE 学习实验室 · 前线部署工程师</title>
+    <meta
+      name="description"
+      content="把《前线部署工程师》变成互动学习：要点、情境决策、闪卡与章节闯关。"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("fde-theme");
+          if (t !== "dark" && t !== "light") t = "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <button type="button" class="icon-btn" id="menu-toggle" aria-label="打开菜单" aria-expanded="false">
+          <span class="icon-menu" aria-hidden="true"></span>
+        </button>
+        <div class="topbar-brand">
+          <span class="dot"></span>
+          <span class="topbar-title">FDE 学习实验室</span>
+        </div>
+        <button type="button" class="icon-btn theme-toggle" id="theme-toggle-top" aria-label="切换白天/黑夜模式">
+          <span class="theme-icon" aria-hidden="true">🌙</span>
+        </button>
+      </header>
+
+      <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-row">
+            <div class="brand-mark"><span class="dot"></span> FDE Lab</div>
+            <button type="button" class="icon-btn sidebar-close" id="menu-close" aria-label="关闭菜单">✕</button>
+          </div>
+          <h1>前线部署工程师</h1>
+          <p>互动学习实验室</p>
+        </div>
+        <nav class="nav">
+          <button type="button" data-view="home" class="active">🏠 首页</button>
+          <button type="button" data-view="path">🗺️ 学习地图</button>
+          <button type="button" data-view="essays">📰 延伸阅读</button>
+          <button type="button" data-view="scenarios">🎯 情境模拟</button>
+          <button type="button" data-view="cards">🃏 概念闪卡</button>
+          <button type="button" data-view="daily">☀️ 今日一练</button>
+          <button type="button" data-view="achievements">🏆 成就墙</button>
+        </nav>
+        <div class="side-stats">
+          <div class="row"><span>进度</span><strong id="stat-progress">0%</strong></div>
+          <div class="row"><span>XP</span><strong id="stat-xp">0</strong></div>
+          <div class="row"><span>连续</span><strong id="stat-streak">0 天</strong></div>
+          <div class="progress-bar"><i id="stat-bar"></i></div>
+        </div>
+        <div class="thanks-box">
+          <div class="thanks-title">特别感谢</div>
+          <a class="thanks-link" href="https://github.com/xdash/FDE-the-Guidance-Book-of-Forward-Deployed-Engineer" target="_blank" rel="noopener">📖 范冰（XDash）· 原书开源</a>
+          <a class="thanks-link" href="https://x.com/XDash" target="_blank" rel="noopener">🐦 关注作者 @XDash</a>
+          <div class="thanks-sub">延伸阅读作者</div>
+          <a class="thanks-link" href="https://x.com/AdrianPunk115" target="_blank" rel="noopener">🙏 @AdrianPunk115</a>
+          <a class="thanks-link" href="https://x.com/Formulasearch" target="_blank" rel="noopener">🙏 @Formulasearch</a>
+          <p class="thanks-note">非官方 · 非盈利学习站</p>
+        </div>
+        <button type="button" class="theme-toggle-bar" id="theme-toggle-side" aria-label="切换白天/黑夜模式">
+          <span class="theme-icon" aria-hidden="true">🌙</span>
+          <span class="theme-label">切换到黑夜模式</span>
+        </button>
+      </aside>
+
+      <main class="main">
+        <section id="view-home" class="view active"></section>
+        <section id="view-path" class="view"></section>
+        <section id="view-chapter" class="view"></section>
+        <section id="view-quiz" class="view"></section>
+        <section id="view-essays" class="view"></section>
+        <section id="view-essay" class="view"></section>
+        <section id="view-scenarios" class="view"></section>
+        <section id="view-cards" class="view"></section>
+        <section id="view-daily" class="view"></section>
+        <section id="view-achievements" class="view"></section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+
+    <script src="vendor/marked.min.js"></script>
+    <script src="book-content.js"></script>
+    <script src="essays-content.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

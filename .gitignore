@@ -1,0 +1,17 @@
+# Local editor / OS
+.obsidian/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Secrets (never commit)
+.env
+.env.*
+*.pem
+*.key
