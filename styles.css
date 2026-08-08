@@ -309,6 +309,87 @@ a:hover {
   );
 }
 
+/* Support / donate (top of home) */
+.support-banner {
+  margin-bottom: 1.25rem;
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: linear-gradient(
+    135deg,
+    var(--accent-dim),
+    color-mix(in srgb, var(--warn) 8%, var(--bg-card))
+  );
+  box-shadow: var(--shadow);
+}
+
+.support-title {
+  margin: 0.45rem 0 0.5rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.support-copy {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  max-width: 70ch;
+}
+
+.donate-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-start;
+}
+
+.donate-card {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  text-align: center;
+  width: min(200px, 46vw);
+}
+
+.donate-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.donate-card figcaption {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.support-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.nav-support {
+  color: var(--accent) !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 860px) {
+  .donate-codes {
+    justify-content: center;
+  }
+  .donate-card {
+    width: min(160px, 44vw);
+  }
+}
+
 .thanks-divider {
   height: 1px;
   background: var(--border);
