@@ -309,9 +309,10 @@ a:hover {
   );
 }
 
-/* Support / donate (top of home) */
+/* Support / donate — horizontal compact strip */
 .support-banner {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem !important;
   border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
   background: linear-gradient(
     135deg,
@@ -321,58 +322,74 @@ a:hover {
   box-shadow: var(--shadow);
 }
 
+.support-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  flex-wrap: nowrap;
+}
+
+.support-banner-head {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .support-title {
-  margin: 0.45rem 0 0.5rem;
-  font-size: 1.2rem;
+  margin: 0.3rem 0 0.35rem;
+  font-size: 1.05rem;
   letter-spacing: -0.02em;
 }
 
 .support-copy {
   margin: 0;
   color: var(--text-muted);
-  font-size: 0.92rem;
-  line-height: 1.65;
-  max-width: 70ch;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 .donate-codes {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+  align-items: stretch;
 }
 
 .donate-card {
   margin: 0;
-  padding: 0.75rem;
-  border-radius: 12px;
+  padding: 0.4rem 0.45rem 0.35rem;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--bg-elevated);
   text-align: center;
-  width: min(200px, 46vw);
+  width: 112px;
+  flex: 0 0 112px;
 }
 
 .donate-card img {
   display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 6px;
   background: #fff;
 }
 
 .donate-card figcaption {
-  margin-top: 0.45rem;
-  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text);
+  line-height: 1.2;
 }
 
 .support-note {
-  margin: 0.85rem 0 0;
-  font-size: 0.8rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
@@ -381,12 +398,23 @@ a:hover {
   font-weight: 700 !important;
 }
 
-@media (max-width: 860px) {
+/* 窄屏：文案在上，两码仍横排并排，略缩小 */
+@media (max-width: 720px) {
+  .support-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .donate-codes {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .donate-card {
-    width: min(160px, 44vw);
+    width: 96px;
+    flex-basis: 96px;
+    padding: 0.35rem;
+  }
+  .donate-card img {
+    width: 84px;
+    height: 84px;
   }
 }
 
