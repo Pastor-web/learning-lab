@@ -282,32 +282,6 @@ function renderHome() {
   const dailyPending = state.dailyDone !== today;
 
   root.innerHTML = `
-    <div class="panel support-banner" id="support">
-      <div class="support-banner-head">
-        <div>
-          <span class="badge ok">自愿 · 非必须</span>
-          <h3 class="support-title">如果这个站帮到你</h3>
-          <p class="support-copy">
-            本站是<strong>非官方学习工具</strong>，原书与延伸文章本身<strong>仍然免费</strong>。
-            整理与托管花了一些个人时间；若你学有所获，可以自愿支持一点——完全不是必须。
-            收款仅用于本站维护，<strong>不是卖书，也不代表作者官方</strong>。
-            更欢迎 Star 仓库、转发给朋友，或去支持原书与文章作者。
-          </p>
-        </div>
-      </div>
-      <div class="donate-codes">
-        <figure class="donate-card">
-          <img src="assets/donate/wechat.jpg" alt="微信收款码" width="200" height="200" loading="lazy" />
-          <figcaption>微信</figcaption>
-        </figure>
-        <figure class="donate-card">
-          <img src="assets/donate/alipay.png" alt="支付宝收款码" width="200" height="200" loading="lazy" />
-          <figcaption>支付宝</figcaption>
-        </figure>
-      </div>
-      <p class="support-note">金额随意 · 不支持也完全 OK，直接往下学就好</p>
-    </div>
-
     <div class="hero">
       <div class="hero-card">
         <span class="badge">个人学习工具 · 非商业</span>
@@ -1325,10 +1299,8 @@ function boot() {
   const navSupport = document.getElementById("nav-support");
   if (navSupport) {
     navSupport.onclick = () => {
-      navigate("home");
-      setTimeout(() => {
-        document.getElementById("support")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 80);
+      closeMenu();
+      document.getElementById("support")?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
   }
 
