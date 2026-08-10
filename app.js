@@ -40,6 +40,54 @@ let scenarioFilter = "all";
 let chapterTab = "read";
 let activeChapterId = null;
 let chapterScrollHandler = null;
+/** null = all / progress-based; number = from 某章「相关闪卡」 */
+let cardFilterChapter = null;
+
+/** 已学章节：阅读进度≥10%、标记已读、或做过测验 */
+function getStudiedChapterIds() {
+  const ids = [];
+  CHAPTERS.forEach((ch) => {
+    if (ch.id < 1) return;
+    const rp = state.readProgress[ch.id] || 0;
+    if (rp >= 10 || state.chapterRead[ch.id] || state.quizScores[ch.id]) {
+      ids.push(ch.id);
+    }
+  });
+  return ids.sort((a, b) => a - b);
+}
+
+function chapterTagMatchers(chapterId) {
+  const tags = [`第${chapterId}章`];
+  if (chapterId === 8) tags.push("案例");
+  if (chapterId === 10 || chapterId === 11 || chapterId === 12) tags.push("指标");
+  return tags;
+}
+
+function cardBelongsToChapter(card, chapterId) {
+  const matchers = chapterTagMatchers(chapterId);
+  return (card.tags || []).some((t) => matchers.some((m) => t === m || t.includes(m)));
+}
+
+function cardsForChapters(chapterIds) {
+  if (!chapterIds || !chapterIds.length) return [];
+  const set = new Set(chapterIds);
+  return FLASHCARDS.filter((c) => [...set].some((id) => cardBelongsToChapter(c, id)));
+}
+
+function dailyPoolForChapters(chapterIds) {
+  if (!chapterIds || !chapterIds.length) return [];
+  const set = new Set(chapterIds);
+  return DAILY_POOL.filter((q) => set.has(q.chapter));
+}
+
+function formatChapterRange(ids) {
+  if (!ids.length) return "尚未记录";
+  if (ids.length === 1) {
+    const ch = CHAPTERS.find((c) => c.id === ids[0]);
+    return ch ? ch.title : `第 ${ids[0]} 章`;
+  }
+  return `第 ${ids[0]}–${ids[ids.length - 1]} 章等共 ${ids.length} 章`;
+}
 
 const THEME_KEY = "fde-theme";
 
@@ -239,6 +287,16 @@ function toast(msg) {
 function navigate(view, payload) {
   currentView = view;
   closeMenu();
+  // 侧栏进闪卡：按已学范围；从章节点「相关闪卡」：带 chapter id
+  if (view === "cards") {
+    if (payload === undefined || payload === null || payload === "") {
+      cardFilterChapter = null;
+    } else {
+      cardFilterChapter = Number(payload);
+    }
+    cardDeck = [];
+    cardIdx = 0;
+  }
   if (view !== "chapter" && chapterScrollHandler) {
     window.removeEventListener("scroll", chapterScrollHandler);
     chapterScrollHandler = null;
@@ -261,7 +319,7 @@ function navigate(view, payload) {
     essays: renderEssays,
     essay: () => renderEssay(payload),
     scenarios: renderScenarios,
-    cards: renderCards,
+    cards: () => renderCards(payload),
     daily: renderDaily,
     achievements: renderAchievements,
   };
@@ -713,7 +771,14 @@ function renderChapter(id) {
   const bq = root.querySelector("#btn-quiz");
   if (bq) bq.onclick = () => navigate("quiz", ch.id);
   const cardsBtn = root.querySelector("#btn-cards-related");
-  if (cardsBtn) cardsBtn.onclick = () => navigate("cards");
+  if (cardsBtn) {
+    cardsBtn.onclick = () => {
+      cardFilterChapter = ch.id;
+      cardDeck = [];
+      cardIdx = 0;
+      navigate("cards", ch.id);
+    };
+  }
   const markBtn = root.querySelector("#btn-mark-read");
   if (markBtn) {
     markBtn.onclick = () => {
@@ -1105,20 +1170,90 @@ function shuffle(arr) {
 
 let cardDeck = [];
 
-function renderCards() {
-  if (!cardDeck.length) cardDeck = shuffle(FLASHCARDS);
-  cardIdx = Math.min(cardIdx, cardDeck.length - 1);
+function buildCardDeck(filterChapter) {
+  if (filterChapter != null && filterChapter !== undefined && filterChapter !== "") {
+    const id = Number(filterChapter);
+    const list = cardsForChapters([id]);
+    return shuffle(list.length ? list : FLASHCARDS.filter(() => false));
+  }
+  // 侧栏进入：按已学章节；尚未学习则全库
+  const studied = getStudiedChapterIds();
+  const list = studied.length ? cardsForChapters(studied) : FLASHCARDS.slice();
+  return shuffle(list.length ? list : FLASHCARDS.slice());
+}
+
+function renderCards(payload) {
+  // cardFilterChapter 已在 navigate 中设置；此处兼容直接调用
+  if (payload != null && payload !== undefined && payload !== "") {
+    cardFilterChapter = Number(payload);
+  }
+  cardDeck = buildCardDeck(cardFilterChapter);
+  cardIdx = 0;
   cardFlipped = false;
   paintCard();
 }
 
 function paintCard() {
   const root = document.getElementById("view-cards");
+  const studied = getStudiedChapterIds();
+  const filterLabel =
+    cardFilterChapter != null
+      ? CHAPTERS.find((c) => c.id === cardFilterChapter)?.title || `第 ${cardFilterChapter} 章`
+      : studied.length
+        ? `已学范围：${formatChapterRange(studied)}`
+        : "全部闪卡（尚未记录学习进度）";
+
+  if (!cardDeck.length) {
+    root.innerHTML = `
+      <div class="view-header">
+        <button class="btn btn-ghost" id="cards-back-path" style="margin-bottom:0.75rem">← 返回学习地图</button>
+        ${
+          cardFilterChapter != null
+            ? `<button class="btn btn-ghost" id="cards-back-chapter" style="margin-bottom:0.75rem;margin-left:0.5rem">← 返回本章</button>`
+            : ""
+        }
+        <h2>概念闪卡</h2>
+        <p>当前范围没有可用闪卡。</p>
+      </div>
+      <div class="panel empty">
+        ${
+          cardFilterChapter != null
+            ? "本章暂无专属闪卡，可返回学习地图继续读下一章，或从侧栏进入「概念闪卡」复习已学章节。"
+            : "请先在学习地图阅读章节（进度达到约 10% 或点「标记已读完」），相关闪卡会出现在这里。"
+        }
+      </div>
+    `;
+    root.querySelector("#cards-back-path").onclick = () => {
+      cardFilterChapter = null;
+      navigate("path");
+    };
+    const bc = root.querySelector("#cards-back-chapter");
+    if (bc) {
+      bc.onclick = () => {
+        const id = cardFilterChapter;
+        cardFilterChapter = null;
+        navigate("chapter", id);
+      };
+    }
+    return;
+  }
+
   const card = cardDeck[cardIdx];
   root.innerHTML = `
     <div class="view-header">
+      <div class="cta-row" style="margin-bottom:0.75rem">
+        <button class="btn btn-ghost" id="cards-back-path">← 返回学习地图</button>
+        ${
+          cardFilterChapter != null
+            ? `<button class="btn btn-ghost" id="cards-back-chapter">← 返回本章</button>`
+            : ""
+        }
+      </div>
       <h2>概念闪卡</h2>
-      <p>点击卡片翻转。建议每天 5–10 张。已复习 <strong>${state.cardsReviewed}</strong> 次。</p>
+      <p>
+        ${cardFilterChapter != null ? `正在复习：<strong>${filterLabel}</strong> 相关卡片。` : filterLabel + "。"}
+        点击翻转。已复习 <strong>${state.cardsReviewed}</strong> 次。
+      </p>
     </div>
     <div class="card-stage">
       <div class="flashcard ${cardFlipped ? "flipped" : ""}" id="flash">
@@ -1144,6 +1279,11 @@ function paintCard() {
       </p>
       <div class="cta-row" style="justify-content:center">
         <button class="btn btn-ghost" id="card-shuffle">重新洗牌</button>
+        ${
+          cardFilterChapter != null
+            ? `<button class="btn btn-ghost" id="card-clear-filter">查看已学全部闪卡</button>`
+            : ""
+        }
       </div>
     </div>
   `;
@@ -1153,6 +1293,18 @@ function paintCard() {
     cardFlipped = !cardFlipped;
     flash.classList.toggle("flipped", cardFlipped);
   };
+  root.querySelector("#cards-back-path").onclick = () => {
+    cardFilterChapter = null;
+    navigate("path");
+  };
+  const backCh = root.querySelector("#cards-back-chapter");
+  if (backCh) {
+    backCh.onclick = () => {
+      const id = cardFilterChapter;
+      cardFilterChapter = null;
+      navigate("chapter", id);
+    };
+  }
   root.querySelector("#card-prev").onclick = () => {
     cardIdx = (cardIdx - 1 + cardDeck.length) % cardDeck.length;
     cardFlipped = false;
@@ -1174,35 +1326,78 @@ function paintCard() {
     paintCard();
   };
   root.querySelector("#card-shuffle").onclick = () => {
-    cardDeck = shuffle(FLASHCARDS);
+    cardDeck = buildCardDeck(cardFilterChapter);
     cardIdx = 0;
     cardFlipped = false;
     paintCard();
   };
+  const clearF = root.querySelector("#card-clear-filter");
+  if (clearF) {
+    clearF.onclick = () => {
+      cardFilterChapter = null;
+      cardDeck = buildCardDeck(null);
+      cardIdx = 0;
+      cardFlipped = false;
+      paintCard();
+    };
+  }
 }
 
 /* ---------- daily ---------- */
-function pickDaily() {
+function pickDaily(pool) {
+  const list = pool && pool.length ? pool : DAILY_POOL;
   const today = new Date().toISOString().slice(0, 10);
-  // stable pick by date
   let hash = 0;
   for (let i = 0; i < today.length; i++) hash = (hash * 31 + today.charCodeAt(i)) >>> 0;
-  return DAILY_POOL[hash % DAILY_POOL.length];
+  // 把已学章节集合也并入哈希，进度变化后题目会随范围更新（同一天同进度则固定）
+  const studiedKey = getStudiedChapterIds().join(",");
+  for (let i = 0; i < studiedKey.length; i++) hash = (hash * 31 + studiedKey.charCodeAt(i)) >>> 0;
+  return list[hash % list.length];
 }
 
 function renderDaily() {
   const root = document.getElementById("view-daily");
   const today = new Date().toISOString().slice(0, 10);
-  const q = pickDaily();
+  const studied = getStudiedChapterIds();
+  const pool = dailyPoolForChapters(studied);
   const done = state.dailyDone === today;
+
+  if (!pool.length) {
+    root.innerHTML = `
+      <div class="view-header">
+        <h2>今日一练</h2>
+        <p>题目会跟随你的学习进度：学过哪些章，就只练哪些章。</p>
+      </div>
+      <div class="panel daily-box">
+        <p style="margin:0 0 0.75rem">你还没有可计入的学习记录。</p>
+        <p class="meta-line" style="margin:0 0 1rem">
+          请先在「学习地图」打开章节阅读（滚动约 10% 以上，或点「标记本章已读完」）。
+          例如学完第 1–3 章后，今日一练只会从第 1–3 章题库出题。
+        </p>
+        <button class="btn btn-primary" id="daily-go-path">去学习地图</button>
+      </div>
+    `;
+    root.querySelector("#daily-go-path").onclick = () => navigate("path");
+    return;
+  }
+
+  const q = pickDaily(pool);
+  const chMeta = CHAPTERS.find((c) => c.id === q.chapter);
 
   root.innerHTML = `
     <div class="view-header">
       <h2>今日一练</h2>
-      <p>每天一题，保持「驻场肌肉」不断。题目按日期固定，方便打卡。</p>
+      <p>
+        已根据学习记录出题：当前范围 <strong>${formatChapterRange(studied)}</strong>。
+        学得越多，题库越大；未学章节不会出现。
+      </p>
     </div>
     <div class="panel daily-box">
-      <div class="quiz-progress">关联第 ${q.chapter} 章 · ${done ? "今日已完成" : "尚未作答"}</div>
+      <div class="quiz-progress">
+        关联 ${chMeta ? chMeta.title : "第 " + q.chapter + " 章"}
+        · 范围共 ${pool.length} 题可选
+        · ${done ? "今日已完成" : "尚未作答"}
+      </div>
       <div class="quiz-q">${q.q}</div>
       <div id="daily-options"></div>
       <div id="daily-explain"></div>
