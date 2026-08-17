@@ -58,6 +58,19 @@ const ESSAYS = [
     tags: ["入行", "面试", "路径"],
     thanks: "感谢 @Formulasearch 的入行路径拆解",
   },
+  {
+    id: "ambertreelet-fde-guide",
+    file: "04-ambertreelet-fde-guide.md",
+    title: "年薪最高 22 万美元的 AI 新岗位：FDE 是什么、怎么入行",
+    author: "小树",
+    handle: "@AmberTreelet",
+    xUrl: "https://x.com/AmberTreelet/status/2088890051862430040",
+    profileUrl: "https://x.com/AmberTreelet",
+    summary:
+      "观猹训练营整理：商务/产品/工程三类 FDE、SOW/Spec/Demo/MVP、Skill 沉淀、系统接入、EDD 评测、简历作品集与面试 Scoping。",
+    tags: ["入门", "工程", "面试", "Agent"],
+    thanks: "感谢 @AmberTreelet 的系统分享",
+  },
 ];
 
 /** 学习路径：交付旅程 */

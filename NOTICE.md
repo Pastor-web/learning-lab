@@ -22,8 +22,9 @@
 | Punk | [@AdrianPunk115](https://x.com/AdrianPunk115) | https://x.com/AdrianPunk115/status/2083090241683128626 |
 | 阿哲Phil | [@Formulasearch](https://x.com/Formulasearch) | https://x.com/Formulasearch/status/2083773600776262120 |
 | 阿哲Phil | [@Formulasearch](https://x.com/Formulasearch) | https://x.com/Formulasearch/status/2084158215596486804 |
+| 小树 | [@AmberTreelet](https://x.com/AmberTreelet) | https://x.com/AmberTreelet/status/2088890051862430040 |
 
-**感谢 @AdrianPunk115、@Formulasearch 的优质分享。**
+**感谢 @AdrianPunk115、@Formulasearch、@AmberTreelet 的优质分享。**
 
 每篇文章页内均附原文链接。若作者要求移除全文，本站将改为摘要 + 外链或下线。
 

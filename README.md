@@ -20,6 +20,8 @@
   https://x.com/Formulasearch/status/2083773600776262120  
 - **阿哲Phil（@Formulasearch）** — 真 FDE 怎么入行  
   https://x.com/Formulasearch/status/2084158215596486804  
+- **小树（@AmberTreelet）** — FDE 分类 / SOW / Skill / EDD / 面试  
+  https://x.com/AmberTreelet/status/2088890051862430040  
 
 详见 [NOTICE.md](./NOTICE.md)。
 

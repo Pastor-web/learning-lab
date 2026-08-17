@@ -402,6 +402,11 @@ function renderHome() {
           · <a href="https://x.com/Formulasearch/status/2084158215596486804" target="_blank" rel="noopener">原文</a>
           · <a href="https://x.com/Formulasearch" target="_blank" rel="noopener">主页</a>
         </li>
+        <li>
+          <strong>小树（@AmberTreelet）</strong> — FDE 分类、SOW/Spec、Skill、EDD、简历面试
+          · <a href="https://x.com/AmberTreelet/status/2088890051862430040" target="_blank" rel="noopener">原文</a>
+          · <a href="https://x.com/AmberTreelet" target="_blank" rel="noopener">主页</a>
+        </li>
       </ul>
       <div class="cta-row">
         <button class="btn btn-ghost" data-go="essays">打开延伸阅读</button>
@@ -440,7 +445,7 @@ function renderHome() {
       主线原文 © ${BOOK_META.author}。感谢作者开源。非商业学习用途；商业用途须获作者书面许可。
       原书：<a href="${BOOK_META.repo}" target="_blank" rel="noopener">GitHub</a>
       · 作者 X：<a href="${BOOK_META.x}" target="_blank" rel="noopener">@XDash</a>。
-      延伸阅读版权归 @AdrianPunk115、@Formulasearch，已附原文链接。若作者要求移除，将改为摘要+外链。
+      延伸阅读版权归 @AdrianPunk115、@Formulasearch、@AmberTreelet，已附原文链接。若作者要求移除，将改为摘要+外链。
     </div>
   `;
 
@@ -830,7 +835,8 @@ function renderEssays() {
       <p style="margin:0;font-size:0.92rem;line-height:1.65">
         🙏 <strong>感谢文章作者</strong>：
         <a href="https://x.com/AdrianPunk115" target="_blank" rel="noopener">@AdrianPunk115（Punk）</a>、
-        <a href="https://x.com/Formulasearch" target="_blank" rel="noopener">@Formulasearch（阿哲Phil）</a>。
+        <a href="https://x.com/Formulasearch" target="_blank" rel="noopener">@Formulasearch（阿哲Phil）</a>、
+        <a href="https://x.com/AmberTreelet" target="_blank" rel="noopener">@AmberTreelet（小树）</a>。
         以下全文仅供非商业学习，每篇均附 X 原文链接；若作者要求下线，本站将立即调整。
       </p>
     </div>
